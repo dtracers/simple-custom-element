@@ -3,10 +3,15 @@
 <script src="customElement.js"></script>
 
 <script>
-(function(importDoc) {
-       window.addEventListener('WebComponentsReady', function() {
+    (function(window, document, undefined) {
+	    var thatDoc = document;
+        var importDoc = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument;
+        window.addEventListener('HTMLImportsLoaded', function() {
+		   alert('LOADING COMPONENTS');
            var link = importDoc.querySelector('#customHtml');
-           var template = link.import.querySelector('#customHtml');
+		   console.log(link);
+           var template = link.import.querySelector('template');
+		   console.log(template);
            var clone = document.importNode(template.content, true);
 
            var newElement = new CustomElement();
@@ -16,13 +21,13 @@
             * Called when the element is created, using document.create()(but does nothing else)
             */
            newElement.createdCallback = function() {
+			   this.initializeElement(clone.cloneNode(true));
            };
 
            /**
             * Creates the shadow root and adds that into the system.
             */
            newElement.attachedCallback = function() {
-               this.initializeElement(clone.cloneNode(true));
            };
 
            newElement.detachedCallback = function() {
@@ -33,7 +38,7 @@
                prototype : newElement
            });
        });
-})(document._currentScript.ownerDocument);
+    })(window, document);
 </script>
 
 </head>
